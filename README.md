@@ -7,7 +7,7 @@ Homebrew formulae maintained by `soundadam`.
 Install the native macOS Codex reasoning monitor:
 
 ```bash
-brew install --cask --no-quarantine soundadam/tap/codex-pulse
+HOMEBREW_CASK_OPTS="--no-quarantine" brew install --cask soundadam/tap/codex-pulse
 ```
 
 Project: [soundadam/codex-pulse](https://github.com/soundadam/codex-pulse)
