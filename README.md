@@ -2,6 +2,16 @@
 
 Homebrew formulae maintained by `soundadam`.
 
+## Codex Pulse
+
+Install the native macOS Codex reasoning monitor:
+
+```bash
+brew install --cask --no-quarantine soundadam/tap/codex-pulse
+```
+
+Project: [soundadam/codex-pulse](https://github.com/soundadam/codex-pulse)
+
 ## codex-switch
 
 Install:
