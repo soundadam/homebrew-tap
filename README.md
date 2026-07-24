@@ -27,3 +27,35 @@ brew install codex-switch
 Project:
 
 https://github.com/soundadam/codex-switch
+
+## soundvpn
+
+Install the current unsigned preview through its single personal-tap cask:
+
+```bash
+brew install --cask soundadam/tap/soundvpn
+```
+
+The cask installs `/Applications/soundvpn.app` and exposes the exact embedded
+`soundvpn` helper on `PATH` for headless operation, diagnostics, configuration,
+and recovery. The app owns the current-user background service lifecycle. There
+is no separate `soundvpn` Formula and `brew services` is not a supported entry
+point.
+
+This preview is ad-hoc signed and is not notarized. Homebrew preserves
+quarantine, so macOS may block first launch. The cask does not change Gatekeeper
+or remove quarantine automatically. Review the exact release version, SHA-256,
+and corresponding source before choosing to continue; after accepting the risk,
+the account owner may run:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/soundvpn.app
+```
+
+The cask remains on a draft branch until an immutable unsigned-preview GitHub
+prerelease, corresponding source archive, fresh-download approval flow, service
+lifecycle, live VPN, upgrade, rollback, and uninstall gates are accepted. A
+future Developer ID signed/notarized stable release remains a separate gate.
+Do not merge or publish the current placeholder checksum.
+
+Project: [soundadam/soundvpn](https://github.com/soundadam/soundvpn)
