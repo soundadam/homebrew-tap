@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # draft: replace version and sha256 from the immutable unsigned-preview release before merge
 cask "soundvpn" do
   version "0.2.0"
