@@ -2,9 +2,9 @@
 
 Homebrew formulae maintained by `soundadam`.
 
-## Codex Pulse
+## CodexIQ
 
-Install the native macOS Codex reasoning monitor:
+Install the native macOS Codex reasoning monitor. The Cask token and transitional app-bundle filename retain the original Codex Pulse compatibility names:
 
 ```bash
 brew install --cask soundadam/tap/codex-pulse
