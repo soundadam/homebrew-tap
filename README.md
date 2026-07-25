@@ -1,55 +1,37 @@
 # Homebrew Tap
 
-Homebrew formulae maintained by `soundadam`.
+Public Homebrew definitions maintained by `soundadam`.
 
-## Codex Pulse
+Source repositories may be private. All package URLs below resolve to immutable,
+anonymously downloadable assets in [`soundadam/homebrew-dist`](https://github.com/soundadam/homebrew-dist).
+Each distribution Release records provenance, source commit, checksum, and license
+boundary. AGPL binary releases include exact corresponding-source archives.
 
-Install the native macOS Codex reasoning monitor:
-
-```bash
-brew install --cask soundadam/tap/codex-pulse
-```
-
-The current release is ad-hoc signed and not notarized. Review the exact Release
-and checksum before deciding whether to remove quarantine manually; the cask
-does not change Gatekeeper policy automatically.
-
-Project: [soundadam/codex-pulse](https://github.com/soundadam/codex-pulse)
-
-## codex-switch
-
-Install:
+## Install
 
 ```bash
 brew install soundadam/tap/codex-switch
-```
-
-Use the fully qualified Formula name with current Homebrew tap-trust rules. This
-trusts the explicitly requested Formula without granting broad trust to every
-current and future entry in the tap.
-
-`codex-switch` is a local Codex auth/profile switcher for ChatGPT subscription auth, API keys, and OpenAI-compatible mirror providers.
-
-Project:
-
-https://github.com/soundadam/codex-switch
-
-## Teaway
-
-Install the macOS power-management CLI:
-
-```bash
+brew install soundadam/tap/njuprobe
 brew install soundadam/tap/teaway
+brew install --cask soundadam/tap/codex-pulse
+brew install --cask soundadam/tap/soundvpn
 ```
 
-Inspect state without changing power settings:
+Use fully qualified names with current Homebrew tap-trust rules. This trusts only
+the explicitly requested Formula or Cask, not every current and future entry.
 
-```bash
-teaway status
-```
+## Security boundaries
 
-Commands such as `teaway on` and `teaway off` change macOS power-management
-state and should be run only from an attended terminal after confirming that no
-critical workload depends on the current sleep configuration.
+- `codex-pulse` and `soundvpn` are ad-hoc signed and not notarized.
+- Homebrew preserves quarantine; no Cask removes quarantine or changes Gatekeeper.
+- `teaway on` and `teaway off` change macOS power-management state and should be
+  run only from an attended terminal.
+- `soundvpn` never removes or migrates a legacy installation automatically.
 
-Project: [soundadam/teaway](https://github.com/soundadam/teaway)
+## Distribution releases
+
+- [Codex Switch 0.1.0](https://github.com/soundadam/homebrew-dist/releases/tag/codex-switch-v0.1.0)
+- [NJUProbe 0.1.0](https://github.com/soundadam/homebrew-dist/releases/tag/njuprobe-v0.1.0)
+- [Teaway 0.2.2](https://github.com/soundadam/homebrew-dist/releases/tag/teaway-v0.2.2)
+- [Codex Pulse 1.0.1](https://github.com/soundadam/homebrew-dist/releases/tag/codex-pulse-v1.0.1)
+- [SoundVPN 0.2.0 unsigned preview](https://github.com/soundadam/homebrew-dist/releases/tag/soundvpn-v0.2.0)
