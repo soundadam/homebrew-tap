@@ -8,8 +8,11 @@ Install the native macOS Codex reasoning monitor:
 
 ```bash
 brew install --cask soundadam/tap/codex-pulse
-xattr -dr com.apple.quarantine "/Applications/Codex Pulse.app"
 ```
+
+The current release is ad-hoc signed and not notarized. Review the exact Release
+and checksum before deciding whether to remove quarantine manually; the cask
+does not change Gatekeeper policy automatically.
 
 Project: [soundadam/codex-pulse](https://github.com/soundadam/codex-pulse)
 
@@ -30,3 +33,23 @@ current and future entry in the tap.
 Project:
 
 https://github.com/soundadam/codex-switch
+
+## Teaway
+
+Install the macOS power-management CLI:
+
+```bash
+brew install soundadam/tap/teaway
+```
+
+Inspect state without changing power settings:
+
+```bash
+teaway status
+```
+
+Commands such as `teaway on` and `teaway off` change macOS power-management
+state and should be run only from an attended terminal after confirming that no
+critical workload depends on the current sleep configuration.
+
+Project: [soundadam/teaway](https://github.com/soundadam/teaway)
