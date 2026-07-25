@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Formula for the Codex authentication profile switcher.
 class CodexSwitch < Formula
   desc "Switch local Codex auth profiles"
   homepage "https://github.com/soundadam/codex-switch"

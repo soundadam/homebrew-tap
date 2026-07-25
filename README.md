@@ -18,9 +18,12 @@ Project: [soundadam/codex-pulse](https://github.com/soundadam/codex-pulse)
 Install:
 
 ```bash
-brew tap soundadam/tap
-brew install codex-switch
+brew install soundadam/tap/codex-switch
 ```
+
+Use the fully qualified Formula name with current Homebrew tap-trust rules. This
+trusts the explicitly requested Formula without granting broad trust to every
+current and future entry in the tap.
 
 `codex-switch` is a local Codex auth/profile switcher for ChatGPT subscription auth, API keys, and OpenAI-compatible mirror providers.
 

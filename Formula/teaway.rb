@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Formula for the teaway macOS power-management CLI.
 class Teaway < Formula
   desc "Keep a closed Mac awake and schedule explicit delayed shutdowns"
   homepage "https://github.com/soundadam/teaway"

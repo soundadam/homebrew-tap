@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 cask "codex-pulse" do
   version "1.0.1"
   sha256 "0837101042307819ad8d3497573a0892d6541f09ad7fde6f91fd2b3539538b60"
