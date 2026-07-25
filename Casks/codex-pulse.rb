@@ -9,11 +9,6 @@ cask "codex-pulse" do
   desc "Live reasoning-token telemetry for Codex"
   homepage "https://github.com/soundadam/homebrew-dist/releases/tag/codex-pulse-v#{version}"
 
-  livecheck do
-    url :url
-    strategy :github_latest
-  end
-
   depends_on macos: :sonoma
 
   app "Codex Pulse.app"
