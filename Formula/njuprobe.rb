@@ -4,9 +4,9 @@
 # Formula for the NJUProbe network measurement CLI.
 class Njuprobe < Formula
   desc "Compare NJU campus and M-Lab network measurements"
-  homepage "https://github.com/soundadam/homebrew-dist/releases/tag/njuprobe-v0.1.3"
-  url "https://github.com/soundadam/homebrew-dist/releases/download/njuprobe-v0.1.3/njuprobe-0.1.3.tar.gz"
-  sha256 "abd3ec7a422d0acbb6c95f4173752a06a0a85f7d6ba44bf52f5b649559c7ffc8"
+  homepage "https://github.com/soundadam/homebrew-dist/releases/tag/njuprobe-v0.2.0"
+  url "https://github.com/soundadam/homebrew-dist/releases/download/njuprobe-v0.2.0/njuprobe-0.2.0.tar.gz"
+  sha256 "42144b940fbbad85a3ca6cb7c14c1539ca3943d2f896dba9a8d3a46cd36de948"
   license all_of: ["MIT", "LGPL-3.0-only", "Apache-2.0"]
   depends_on "go" => :build
 
