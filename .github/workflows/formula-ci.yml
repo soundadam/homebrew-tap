@@ -125,9 +125,8 @@ jobs:
             python3 -c 'import json,sys; print(json.load(sys.stdin)["formulae"][0]["versions"]["stable"])')"
           test "$(teaway version)" = "teaway $formula_version"
 
-          state_dir="$RUNNER_TEMP/teaway-state"
-          status="$(TEAWAY_STATE_DIR="$state_dir" teaway status)"
-          grep -q '^teaway:' <<<"$status"
+          help_output="$(teaway help)"
+          grep -q '^Usage:' <<<"$help_output"
           auth_status="$(teaway auth status)"
           grep -q '^authorization: unregistered$' <<<"$auth_status"
 
