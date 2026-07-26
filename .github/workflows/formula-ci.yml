@@ -1,0 +1,76 @@
+name: Formula CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "Formula/njuprobe.rb"
+      - ".github/workflows/formula-ci.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Formula/njuprobe.rb"
+      - ".github/workflows/formula-ci.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: formula-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  njuprobe:
+    name: NJUProbe (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-15
+          - macos-26
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@v6
+
+      - name: Audit, install, and test NJUProbe
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sw_vers
+          uname -m
+          brew update
+
+          test_tap=soundadam/njuprobe-ci
+          cleanup() {
+            brew uninstall --force njuprobe >/dev/null 2>&1 || true
+            brew untap "$test_tap" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          brew tap-new --no-git "$test_tap"
+          formula_path="$(brew --repo "$test_tap")/Formula/njuprobe.rb"
+          cp Formula/njuprobe.rb "$formula_path"
+
+          brew style "$formula_path"
+          brew audit --strict --new --formula "$test_tap/njuprobe"
+          HOMEBREW_NO_INSTALL_FROM_API=1 \
+            brew install --build-from-source "$test_tap/njuprobe"
+          brew test "$test_tap/njuprobe"
+
+          formula_version="$({ brew info --json=v2 "$test_tap/njuprobe"; } | \
+            python3 -c 'import json,sys; print(json.load(sys.stdin)["formulae"][0]["versions"]["stable"])')"
+          test "$(njuprobe version)" = "NJUProbe $formula_version"
+
+          acceptance_home="$RUNNER_TEMP/njuprobe-home"
+          mkdir -p "$acceptance_home"
+          diagnostics="$(HOME="$acceptance_home" njuprobe doctor --json)"
+          printf '%s\n' "$diagnostics" | python3 -c 'import json,sys; value=json.load(sys.stdin); assert value["ready"] is True, value; assert value["combinedReady"] is False, value; assert value["providers"] == {"campus": "ready", "mlab": "ready"}, value'
+          test "$(HOME="$acceptance_home" njuprobe history --json)" = "[]"
