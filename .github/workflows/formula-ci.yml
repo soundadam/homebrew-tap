@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - "Formula/njulogin.rb"
       - "Formula/njuprobe.rb"
       - "Formula/teaway.rb"
       - ".github/workflows/formula-ci.yml"
@@ -11,6 +12,7 @@ on:
     branches:
       - main
     paths:
+      - "Formula/njulogin.rb"
       - "Formula/njuprobe.rb"
       - "Formula/teaway.rb"
       - ".github/workflows/formula-ci.yml"
@@ -23,6 +25,100 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  njulogin:
+    name: njulogin (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-15
+          - macos-26
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+      HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.NJULOGIN_GITHUB_TOKEN }}
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Detect njulogin Formula
+        id: formula
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f Formula/njulogin.rb ]]; then
+            echo "present=true" >>"$GITHUB_OUTPUT"
+          else
+            echo "present=false" >>"$GITHUB_OUTPUT"
+          fi
+
+      - name: Report prepared job
+        if: steps.formula.outputs.present != 'true'
+        run: echo "Formula/njulogin.rb is not present yet; the dedicated job is prepared."
+
+      - name: Audit, install, and test njulogin
+        if: steps.formula.outputs.present == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -n "${HOMEBREW_GITHUB_API_TOKEN:-}"
+          sw_vers
+          uname -m
+          brew update
+
+          test_tap=soundadam/njulogin-ci
+          cleanup() {
+            brew uninstall --force njulogin >/dev/null 2>&1 || true
+            brew untap "$test_tap" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          brew tap-new --no-git "$test_tap"
+          formula_path="$(brew --repo "$test_tap")/Formula/njulogin.rb"
+          cp Formula/njulogin.rb "$formula_path"
+          chmod 0644 "$formula_path"
+
+          brew style "$formula_path"
+          brew audit --strict --new --formula "$test_tap/njulogin"
+          HOMEBREW_NO_INSTALL_FROM_API=1 \
+            brew install --build-from-source "$test_tap/njulogin"
+          brew test "$test_tap/njulogin"
+
+          formula_version="$({ brew info --json=v2 "$test_tap/njulogin"; } | \
+            python3 -c 'import json,sys; print(json.load(sys.stdin)["formulae"][0]["versions"]["stable"])')"
+          test "$(njulogin version)" = "njulogin $formula_version"
+
+          build_metadata="$(go version -m "$(command -v njulogin)")"
+          printf '%s\n' "$build_metadata"
+          build_go="$(printf '%s\n' "$build_metadata" | awk 'NR == 1 {print $2}')"
+          python3 - "$build_go" <<'PY'
+          import re
+          import sys
+
+          match = re.fullmatch(r"go(\d+)\.(\d+)(?:\.(\d+))?.*", sys.argv[1])
+          assert match, sys.argv[1]
+          version = tuple(int(value or 0) for value in match.groups())
+          assert version >= (1, 25, 12), version
+          PY
+          grep -Fq $'\tpath\tgithub.com/soundadam/njulogin/cmd/njulogin' <<<"$build_metadata"
+
+          help_output="$(njulogin help 2>&1)"
+          grep -q '^Usage:' <<<"$help_output"
+
+          set +e
+          njulogin </dev/null >"$RUNNER_TEMP/njulogin.stdout" 2>"$RUNNER_TEMP/njulogin.stderr"
+          nonterminal_status=$?
+          njulogin unknown-command >"$RUNNER_TEMP/njulogin-unknown.stdout" 2>"$RUNNER_TEMP/njulogin-unknown.stderr"
+          unknown_status=$?
+          set -e
+          test "$nonterminal_status" -eq 2
+          test "$unknown_status" -eq 2
+          grep -q '^Usage:' "$RUNNER_TEMP/njulogin.stderr"
+
   njuprobe:
     name: NJUProbe (${{ matrix.os }})
     runs-on: ${{ matrix.os }}

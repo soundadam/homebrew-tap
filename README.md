@@ -8,6 +8,10 @@ downloadable assets in [`soundadam/homebrew-dist`](https://github.com/soundadam/
 Each Formula or Cask pins an exact version and checksum. AGPL binary releases include
 the exact corresponding-source archive.
 
+`njulogin` is an exception: its source repository and release asset are private.
+Its Formula uses a checksum-pinned GitHub Release asset and requires
+`HOMEBREW_GITHUB_API_TOKEN` with read access to `soundadam/njulogin`.
+
 ## Install
 
 ```bash
@@ -19,6 +23,16 @@ brew install --cask soundadam/tap/mac-thermal-lab
 brew install --cask soundadam/tap/soundvpn
 ```
 
+For private `njulogin` source access:
+
+```bash
+export HOMEBREW_GITHUB_API_TOKEN="$(gh auth token)"
+brew install soundadam/tap/njulogin
+```
+
+The token is used by Homebrew for the authenticated source download and is not
+embedded in the Formula or installed executable.
+
 Use fully qualified names with current Homebrew tap-trust rules. This trusts only
 the explicitly requested Formula or Cask, not every current and future entry.
 
@@ -28,6 +42,9 @@ the explicitly requested Formula or Cask, not every current and future entry.
 - Homebrew preserves quarantine; no Cask removes quarantine or changes Gatekeeper.
 - `teaway` is built from its public immutable source tag. `on`, `off`, helper
   registration, and shutdown mutation should be run only from an attended terminal.
+- `njulogin` stores one plaintext credential file protected by directory mode
+  `0700` and file mode `0600`; its private source asset requires repository-read
+  authorization.
 - `soundvpn` never removes or migrates a legacy installation automatically.
 
 ## Distribution releases
