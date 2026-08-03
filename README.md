@@ -20,7 +20,6 @@ brew install soundadam/tap/njuprobe
 brew install soundadam/tap/teaway
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
-brew install --cask soundadam/tap/soundvpn
 ```
 
 For private `njulogin` source access:
@@ -38,14 +37,13 @@ the explicitly requested Formula or Cask, not every current and future entry.
 
 ## Security boundaries
 
-- `codex-pulse`, `mac-thermal-lab`, and `soundvpn` are ad-hoc signed and not notarized.
+- `codex-pulse` and `mac-thermal-lab` are ad-hoc signed and not notarized.
 - Homebrew preserves quarantine; no Cask removes quarantine or changes Gatekeeper.
 - `teaway` is built from its public immutable source tag. `on`, `off`, helper
   registration, and shutdown mutation should be run only from an attended terminal.
 - `njulogin` stores one plaintext credential file protected by directory mode
   `0700` and file mode `0600`; its private source asset requires repository-read
   authorization.
-- `soundvpn` never removes or migrates a legacy installation automatically.
 
 ## Distribution releases
 
@@ -54,4 +52,3 @@ the explicitly requested Formula or Cask, not every current and future entry.
 - [teaway 0.3.0](https://github.com/soundadam/teaway/releases/tag/v0.3.0)
 - [Codex Pulse 1.0.1](https://github.com/soundadam/homebrew-dist/releases/tag/codex-pulse-v1.0.1)
 - [Mac Thermal Lab 0.2.0 unsigned preview](https://github.com/soundadam/homebrew-dist/releases/tag/mac-thermal-lab-v0.2.0)
-- [SoundVPN 0.2.0 unsigned preview](https://github.com/soundadam/homebrew-dist/releases/tag/soundvpn-v0.2.0)
