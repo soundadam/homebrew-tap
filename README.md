@@ -16,7 +16,7 @@ Its Formula uses a checksum-pinned GitHub Release asset and requires
 
 ```bash
 brew install soundadam/tap/codex-switch
-brew install soundadam/tap/njuprobe
+brew install soundadam/tap/soundprobe
 brew install soundadam/tap/teaway
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
@@ -48,7 +48,7 @@ the explicitly requested Formula or Cask, not every current and future entry.
 ## Distribution releases
 
 - [Codex Switch 0.1.0](https://github.com/soundadam/homebrew-dist/releases/tag/codex-switch-v0.1.0)
-- [NJUProbe 0.1.0](https://github.com/soundadam/homebrew-dist/releases/tag/njuprobe-v0.1.0)
+- [SoundProbe 0.3.0](https://github.com/soundadam/soundprobe/releases/tag/v0.3.0)
 - [teaway 0.3.0](https://github.com/soundadam/teaway/releases/tag/v0.3.0)
 - [Codex Pulse 1.0.1](https://github.com/soundadam/homebrew-dist/releases/tag/codex-pulse-v1.0.1)
 - [Mac Thermal Lab 0.2.0 unsigned preview](https://github.com/soundadam/homebrew-dist/releases/tag/mac-thermal-lab-v0.2.0)

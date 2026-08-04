@@ -1,19 +1,14 @@
 # typed: strict
 # frozen_string_literal: true
 
-# Formula for the NJUProbe network measurement CLI.
-class Njuprobe < Formula
+# Formula for the SoundProbe network measurement CLI.
+class Soundprobe < Formula
   desc "Compare NJU campus and M-Lab network measurements"
-  homepage "https://github.com/soundadam/homebrew-dist/releases/tag/njuprobe-v0.2.0"
-  url "https://github.com/soundadam/homebrew-dist/releases/download/njuprobe-v0.2.0/njuprobe-0.2.0.tar.gz"
-  sha256 "42144b940fbbad85a3ca6cb7c14c1539ca3943d2f896dba9a8d3a46cd36de948"
+  homepage "https://github.com/soundadam/soundprobe"
+  url "https://github.com/soundadam/soundprobe/releases/download/v0.3.0/soundprobe-0.3.0.tar.gz"
+  sha256 "7d9acadc87c7f22e6dc58b018091580dec6ed4b83741f548515bed35525af624"
   license all_of: ["MIT", "LGPL-3.0-only", "Apache-2.0"]
   depends_on "go" => :build
-
-  resource "librespeed-cli" do
-    url "https://github.com/librespeed/speedtest-cli/archive/refs/tags/v1.0.13.tar.gz"
-    sha256 "5ad938b61e3edc0ca95e2ccff0c06e97a69383f3cbb0243bd47b21b9865f9f55"
-  end
 
   resource "ndt7-client" do
     url "https://github.com/m-lab/ndt7-client-go/archive/refs/tags/v0.10.1.tar.gz"
@@ -23,20 +18,20 @@ class Njuprobe < Formula
   def install
     version_ldflags = %W[
       -s -w
-      -X github.com/soundadam/njuprobe/internal/buildinfo.Version=#{version}
-      -X github.com/soundadam/njuprobe/internal/buildinfo.Commit=v#{version}
-      -X github.com/soundadam/njuprobe/internal/buildinfo.Date=1970-01-01T00:00:00Z
+      -X github.com/soundadam/soundprobe/internal/buildinfo.Version=#{version}
+      -X github.com/soundadam/soundprobe/internal/buildinfo.Commit=v#{version}
+      -X github.com/soundadam/soundprobe/internal/buildinfo.Date=1970-01-01T00:00:00Z
     ].join(" ")
-    system "go", "build", *std_go_args(ldflags: version_ldflags), "./cmd/njuprobe"
+    system "go", "build", *std_go_args(ldflags: version_ldflags), "./cmd/soundprobe"
 
-    helper_dir = libexec/"njuprobe"
+    helper_dir = libexec/"soundprobe"
     helper_dir.mkpath
 
-    resource("librespeed-cli").stage do
+    cd "components/librespeed-cli" do
       ldflags = %w[
         -s -w -buildid=
         -X github.com/librespeed/speedtest-cli/defs.ProgName=librespeed-cli
-        -X github.com/librespeed/speedtest-cli/defs.ProgVersion=v1.0.13
+        -X github.com/librespeed/speedtest-cli/defs.ProgVersion=v1.0.13-campus.1
         -X github.com/librespeed/speedtest-cli/defs.BuildDate=1970-01-01T00:00:00Z
       ].join(" ")
       system "go", "build", "-trimpath", "-ldflags", ldflags,
@@ -47,7 +42,7 @@ class Njuprobe < Formula
     resource("ndt7-client").stage do
       ldflags = %w[
         -s -w -buildid=
-        -X main.ClientName=njuprobe
+        -X main.ClientName=soundprobe
         -X main.ClientVersion=0.10.1
       ].join(" ")
       system "go", "build", "-trimpath", "-ldflags", ldflags,
@@ -60,13 +55,13 @@ class Njuprobe < Formula
   end
 
   test do
-    assert_match version.to_s, shell_output("#{bin}/njuprobe version")
+    assert_match version.to_s, shell_output("#{bin}/soundprobe version")
 
-    diagnostics = shell_output("#{bin}/njuprobe doctor --json")
+    diagnostics = shell_output("#{bin}/soundprobe doctor --json")
     assert_match '"ready":true', diagnostics
     assert_match '"campus":"ready"', diagnostics
     assert_match '"mlab":"ready"', diagnostics
 
-    assert_equal "[]\n", shell_output("#{bin}/njuprobe history --json")
+    assert_equal "[]\n", shell_output("#{bin}/soundprobe history --json")
   end
 end
