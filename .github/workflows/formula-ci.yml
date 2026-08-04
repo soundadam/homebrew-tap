@@ -5,7 +5,7 @@ on:
   pull_request:
     paths:
       - "Formula/njulogin.rb"
-      - "Formula/njuprobe.rb"
+      - "Formula/soundprobe.rb"
       - "Formula/teaway.rb"
       - ".github/workflows/formula-ci.yml"
   push:
@@ -13,7 +13,7 @@ on:
       - main
     paths:
       - "Formula/njulogin.rb"
-      - "Formula/njuprobe.rb"
+      - "Formula/soundprobe.rb"
       - "Formula/teaway.rb"
       - ".github/workflows/formula-ci.yml"
 
@@ -119,8 +119,8 @@ jobs:
           test "$unknown_status" -eq 2
           grep -q '^Usage:' "$RUNNER_TEMP/njulogin.stderr"
 
-  njuprobe:
-    name: NJUProbe (${{ matrix.os }})
+  soundprobe:
+    name: SoundProbe (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
@@ -137,7 +137,7 @@ jobs:
       - name: Check out tap
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
-      - name: Audit, install, and test NJUProbe
+      - name: Audit, install, and test SoundProbe
         shell: bash
         run: |
           set -euo pipefail
@@ -146,32 +146,32 @@ jobs:
           uname -m
           brew update
 
-          test_tap=soundadam/njuprobe-ci
+          test_tap=soundadam/soundprobe-ci
           cleanup() {
-            brew uninstall --force njuprobe >/dev/null 2>&1 || true
+            brew uninstall --force soundprobe >/dev/null 2>&1 || true
             brew untap "$test_tap" >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
 
           brew tap-new --no-git "$test_tap"
-          formula_path="$(brew --repo "$test_tap")/Formula/njuprobe.rb"
-          cp Formula/njuprobe.rb "$formula_path"
+          formula_path="$(brew --repo "$test_tap")/Formula/soundprobe.rb"
+          cp Formula/soundprobe.rb "$formula_path"
 
           brew style "$formula_path"
-          brew audit --strict --new --formula "$test_tap/njuprobe"
+          brew audit --strict --new --formula "$test_tap/soundprobe"
           HOMEBREW_NO_INSTALL_FROM_API=1 \
-            brew install --build-from-source "$test_tap/njuprobe"
-          brew test "$test_tap/njuprobe"
+            brew install --build-from-source "$test_tap/soundprobe"
+          brew test "$test_tap/soundprobe"
 
-          formula_version="$({ brew info --json=v2 "$test_tap/njuprobe"; } | \
+          formula_version="$({ brew info --json=v2 "$test_tap/soundprobe"; } | \
             python3 -c 'import json,sys; print(json.load(sys.stdin)["formulae"][0]["versions"]["stable"])')"
-          test "$(njuprobe version)" = "NJUProbe $formula_version"
+          test "$(soundprobe version)" = "SoundProbe $formula_version"
 
-          acceptance_home="$RUNNER_TEMP/njuprobe-home"
+          acceptance_home="$RUNNER_TEMP/soundprobe-home"
           mkdir -p "$acceptance_home"
-          diagnostics="$(HOME="$acceptance_home" njuprobe doctor --json)"
+          diagnostics="$(HOME="$acceptance_home" soundprobe doctor --json)"
           printf '%s\n' "$diagnostics" | python3 -c 'import json,sys; value=json.load(sys.stdin); assert value["ready"] is True, value; assert value["combinedReady"] is False, value; assert value["providers"] == {"campus": "ready", "mlab": "ready"}, value'
-          test "$(HOME="$acceptance_home" njuprobe history --json)" = "[]"
+          test "$(HOME="$acceptance_home" soundprobe history --json)" = "[]"
 
   teaway:
     name: teaway (${{ matrix.os }})
