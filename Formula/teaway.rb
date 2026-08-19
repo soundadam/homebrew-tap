@@ -4,8 +4,8 @@
 class Teaway < Formula
   desc "Run a Mac as an always-on server with reversible sleep control"
   homepage "https://github.com/soundadam/teaway"
-  url "https://github.com/soundadam/teaway/archive/refs/tags/v0.4.1.tar.gz"
-  sha256 "ca486468000b8cb2030fc02181ccd02a62a7643f7eada482e2180ad8faf9b904"
+  url "https://github.com/soundadam/teaway/archive/refs/tags/v0.4.2.tar.gz"
+  sha256 "cc54ab87745c4e41099b0c3f3f50dd2c6bf0ad961d41de3e0f6d88fff13701c7"
   license "MIT"
 
   depends_on xcode: ["15.0", :build]
