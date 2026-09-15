@@ -6,7 +6,8 @@ Public source repositories are consumed directly from immutable release tags whe
 possible. Packages whose source or build pipeline is private use anonymously
 downloadable assets in [`soundadam/homebrew-dist`](https://github.com/soundadam/homebrew-dist).
 Each Formula or Cask pins an exact version and checksum. AGPL binary releases include
-the exact corresponding-source archive.
+the exact corresponding-source archive, except the soundconnect preview, which
+publishes only the binary, checksum, and build manifest.
 
 `njulogin` is an exception: its source repository and release asset are private.
 Its Formula uses a checksum-pinned GitHub Release asset and requires
@@ -20,6 +21,7 @@ brew install soundadam/tap/soundprobe
 brew install soundadam/tap/teaway
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
+brew install --cask soundadam/tap/soundconnect
 ```
 
 For private `njulogin` source access:
@@ -37,8 +39,10 @@ the explicitly requested Formula or Cask, not every current and future entry.
 
 ## Security boundaries
 
-- `codex-pulse` and `mac-thermal-lab` are ad-hoc signed and not notarized.
+- `codex-pulse`, `mac-thermal-lab`, and `soundconnect` are ad-hoc signed and not notarized.
 - Homebrew preserves quarantine; no Cask removes quarantine or changes Gatekeeper.
+- `soundconnect` is a private-source preview. Recipients may remove quarantine
+  locally with `xattr` after reviewing the Release and SHA-256.
 - `teaway` is built from its public immutable source tag. `on`, `off`, helper
   registration, and shutdown mutation should be run only from an attended terminal.
 - `njulogin` stores one plaintext credential file protected by directory mode
@@ -52,3 +56,4 @@ the explicitly requested Formula or Cask, not every current and future entry.
 - [teaway 0.3.0](https://github.com/soundadam/teaway/releases/tag/v0.3.0)
 - [Codex Pulse 1.0.1](https://github.com/soundadam/homebrew-dist/releases/tag/codex-pulse-v1.0.1)
 - [Mac Thermal Lab 0.2.0 unsigned preview](https://github.com/soundadam/homebrew-dist/releases/tag/mac-thermal-lab-v0.2.0)
+- [soundconnect 1.1.0-alpha.1 unsigned preview](https://github.com/soundadam/homebrew-dist/releases/tag/soundconnect-v1.1.0-alpha.1)
