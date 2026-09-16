@@ -24,7 +24,7 @@ cask "soundprobe" do
   end
 
   name "soundprobe"
-  desc "Education-network-first macOS network path measurements"
+  desc "Education-network-first network path measurements"
   homepage "https://github.com/soundadam/soundprobe"
 
   livecheck do
@@ -33,9 +33,9 @@ cask "soundprobe" do
 
   binary "soundprobe"
 
-  postflight do
-    if OS.mac?
-      system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/soundprobe"]
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/soundprobe"]
     end
   end
 
