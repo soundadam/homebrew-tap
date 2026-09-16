@@ -175,8 +175,13 @@ jobs:
 
           acceptance_home="$RUNNER_TEMP/soundprobe-home"
           mkdir -p "$acceptance_home"
+          set +e
           diagnostics="$(HOME="$acceptance_home" soundprobe doctor --json)"
-          printf '%s\n' "$diagnostics" | python3 -c 'import json,sys; json.load(sys.stdin)'
+          doctor_status=$?
+          set -e
+          printf 'soundprobe doctor exit: %s\n' "$doctor_status"
+          printf '%s\n' "$diagnostics"
+          printf '%s\n' "$diagnostics" | python3 -c 'import json,sys; value=json.load(sys.stdin); assert "ready" in value and "providers" in value, value; assert value.get("version") == sys.argv[1], value' "$cask_version"
           test "$(HOME="$acceptance_home" soundprobe history --json)" = "[]"
 
   teaway:
