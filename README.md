@@ -42,9 +42,10 @@ the explicitly requested Formula or Cask, not every current and future entry.
 - `codex-pulse`, `mac-thermal-lab`, and `soundconnect` are ad-hoc signed and not notarized.
 - Homebrew preserves quarantine for `codex-pulse`, `mac-thermal-lab`, and
   `soundconnect`; those casks do not change Gatekeeper.
-- `soundprobe` is an unsigned CLI cask. Its post-install hook clears the
-  quarantine xattr on the staged binary so Gatekeeper does not block it.
-  Measurement helpers are not bundled; run `soundprobe doctor` after install.
+- `soundprobe` is an unsigned CLI cask. Homebrew preserves quarantine; this
+  cask does not change Gatekeeper. Recipients may remove quarantine locally
+  with `xattr` after reviewing the Release and SHA-256. Measurement helpers
+  are not bundled; run `soundprobe doctor` after install.
 - `soundconnect` is a private-source preview. Recipients may remove quarantine
   locally with `xattr` after reviewing the Release and SHA-256.
 - `teaway` is built from its public immutable source tag. `on`, `off`, helper
