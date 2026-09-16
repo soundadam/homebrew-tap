@@ -3,10 +3,11 @@
 
 # Formula for the SoundProbe network measurement CLI.
 class Soundprobe < Formula
-  desc "Compare NJU campus and M-Lab network measurements"
+  desc "Education-network-first macOS network path measurements"
   homepage "https://github.com/soundadam/soundprobe"
-  url "https://github.com/soundadam/soundprobe/releases/download/v0.3.0/soundprobe-0.3.0.tar.gz"
-  sha256 "7d9acadc87c7f22e6dc58b018091580dec6ed4b83741f548515bed35525af624"
+  url "https://github.com/soundadam/soundprobe/archive/refs/tags/v0.4.0.tar.gz"
+  sha256 "6053ab8fa1324a093d7806ea712b3fd31c829812084caee63c09e85a4b5759a8"
+  version "0.4.0"
   license all_of: ["MIT", "LGPL-3.0-only", "Apache-2.0"]
   depends_on "go" => :build
 
