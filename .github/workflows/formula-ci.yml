@@ -169,7 +169,9 @@ jobs:
 
           cask_version="$({ brew info --json=v2 --cask "$test_tap/soundprobe"; } | \
             python3 -c 'import json,sys; print(json.load(sys.stdin)["casks"][0]["version"])')"
-          test "$(soundprobe version)" = "SoundProbe $cask_version"
+          got="$(soundprobe version)"
+          printf 'soundprobe version: %s\n' "$got"
+          test "$got" = "soundprobe $cask_version"
 
           acceptance_home="$RUNNER_TEMP/soundprobe-home"
           mkdir -p "$acceptance_home"

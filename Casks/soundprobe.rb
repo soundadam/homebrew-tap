@@ -33,17 +33,16 @@ cask "soundprobe" do
 
   binary "soundprobe"
 
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/soundprobe"]
+    end
+  end
+
   # No zap stanza required
 
   caveats <<~EOS
     soundprobe is MIT licensed.
-
-    This is an unsigned CLI cask. Homebrew preserves quarantine and this cask
-    does not change Gatekeeper policy or remove extended attributes
-    automatically. After reviewing the Release and SHA-256, the account owner
-    may remove quarantine explicitly with:
-
-      xattr -dr com.apple.quarantine "#{caskroom_path}/#{version}/soundprobe"
 
     The optional measurement helpers are separate programs with their own
     licenses and are NOT bundled with this package:
