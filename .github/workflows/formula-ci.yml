@@ -164,12 +164,8 @@ jobs:
 
           brew style "$cask_path"
           brew audit --cask "$test_tap/soundprobe"
-          # The cask preserves quarantine (Homebrew style forbids a Ruby
-          # postflight xattr hook, and postflight_steps has no xattr step).
-          # CI uses Homebrew's --no-quarantine so the unsigned CLI smoke test
-          # can run; users follow the cask caveats instead.
           HOMEBREW_NO_INSTALL_FROM_API=1 \
-            brew install --cask --no-quarantine "$test_tap/soundprobe"
+            brew install --cask "$test_tap/soundprobe"
 
           cask_version="$({ brew info --json=v2 --cask "$test_tap/soundprobe"; } | \
             python3 -c 'import json,sys; print(json.load(sys.stdin)["casks"][0]["version"])')"
