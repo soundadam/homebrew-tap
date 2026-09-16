@@ -17,7 +17,7 @@ Its Formula uses a checksum-pinned GitHub Release asset and requires
 
 ```bash
 brew install soundadam/tap/codex-switch
-brew install soundadam/tap/soundprobe
+brew install --cask soundadam/tap/soundprobe
 brew install soundadam/tap/teaway
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
@@ -40,7 +40,11 @@ the explicitly requested Formula or Cask, not every current and future entry.
 ## Security boundaries
 
 - `codex-pulse`, `mac-thermal-lab`, and `soundconnect` are ad-hoc signed and not notarized.
-- Homebrew preserves quarantine; no Cask removes quarantine or changes Gatekeeper.
+- Homebrew preserves quarantine for `codex-pulse`, `mac-thermal-lab`, and
+  `soundconnect`; those casks do not change Gatekeeper.
+- `soundprobe` is an unsigned CLI cask. Its post-install hook clears the
+  quarantine xattr on the staged binary so Gatekeeper does not block it.
+  Measurement helpers are not bundled; run `soundprobe doctor` after install.
 - `soundconnect` is a private-source preview. Recipients may remove quarantine
   locally with `xattr` after reviewing the Release and SHA-256.
 - `teaway` is built from its public immutable source tag. `on`, `off`, helper
