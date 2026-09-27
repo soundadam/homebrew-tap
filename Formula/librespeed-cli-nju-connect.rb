@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class LibrespeedCliSoundconnect < Formula
+class LibrespeedCliNjuConnect < Formula
   desc "LibreSpeed CLI helper with explicit SOCKS and structured progress support"
   homepage "https://github.com/soundadam/soundprobe/tree/v0.3.0/components/librespeed-cli"
   url "https://github.com/soundadam/soundprobe/releases/download/v0.3.0/soundprobe-0.3.0.tar.gz"
@@ -27,7 +27,7 @@ class LibrespeedCliSoundconnect < Formula
 
   def caveats
     <<~EOS
-      This keg provides a private libexec helper for soundconnect. It does not
+      This keg provides a private libexec helper for nju-connect. It does not
       link a second librespeed-cli command into Homebrew's global bin directory.
     EOS
   end
