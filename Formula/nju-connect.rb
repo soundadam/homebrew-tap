@@ -5,7 +5,7 @@ class NjuConnect < Formula
   homepage "https://soundadam.github.io/nju-connect/"
   url "https://github.com/soundadam/nju-connect/archive/refs/tags/v1.1.1.tar.gz"
   sha256 "1867b87e5bb089ffe53e168074bb2939f269ecc52ff3ecb1e898e77e051f8f86"
-  license "AGPL-3.0-only"
+  license "AGPL-3.0-or-later"
 
   depends_on "go" => :build
   depends_on "librespeed-cli-nju-connect"
