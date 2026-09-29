@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 cask "nju-connect" do
-  version "1.1.0"
-  sha256 "3466c6f63e6d43d2cf1732bd588ee2644a208adf38e813c5e44b45ea5ce94a8b"
+  version "1.1.1"
+  sha256 "32142611c86e67434e33b589271f30acc808836cdfa840fd0280ac8b9eadc2dd"
 
-  url "https://github.com/soundadam/nju-connect/releases/download/v1.1.0/nju-connect-1.1.0-macos-universal.zip"
+  url "https://github.com/soundadam/nju-connect/releases/download/v1.1.1/nju-connect-1.1.1-macos-universal.zip"
   name "nju-connect"
   desc "Menu-bar controller and native campus-connectivity CLI"
   homepage "https://soundadam.github.io/nju-connect/"
