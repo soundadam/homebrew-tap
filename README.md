@@ -20,7 +20,8 @@ brew install --cask soundadam/tap/soundprobe
 brew install soundadam/tap/teaway
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
-brew install --cask soundadam/tap/nju-connect
+brew install --cask soundadam/tap/nju-connect   # macOS
+brew install soundadam/tap/nju-connect          # Linux
 ```
 
 For private `njulogin` source access:
@@ -47,6 +48,7 @@ the explicitly requested Formula or Cask, not every current and future entry.
 - `nju-connect` is an AGPL-3.0 preview built from its public tagged source.
   Recipients may remove quarantine locally with `xattr` after reviewing the
   Release and SHA-256. Its speed test uses the `librespeed-cli-nju-connect` Formula.
+  The Linux-only `nju-connect` Formula builds the CLI from the same public tag.
 - `teaway` is built from its public immutable source tag. `on`, `off`, helper
   registration, and shutdown mutation should be run only from an attended terminal.
 - `njulogin` stores one plaintext credential file protected by directory mode
