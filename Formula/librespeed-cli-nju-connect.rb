@@ -2,8 +2,8 @@
 
 class LibrespeedCliNjuConnect < Formula
   desc "LibreSpeed CLI helper with explicit SOCKS and structured progress support"
-  homepage "https://github.com/soundadam/soundprobe/tree/v0.3.0/components/librespeed-cli"
-  url "https://github.com/soundadam/soundprobe/releases/download/v0.3.0/soundprobe-0.3.0.tar.gz"
+  homepage "https://github.com/soundadam/pace/tree/v0.3.0/components/librespeed-cli"
+  url "https://github.com/soundadam/pace/releases/download/v0.3.0/soundprobe-0.3.0.tar.gz"
   version "1.0.13"
   sha256 "7d9acadc87c7f22e6dc58b018091580dec6ed4b83741f548515bed35525af624"
   license "LGPL-3.0-only"
