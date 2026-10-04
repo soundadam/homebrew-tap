@@ -7,7 +7,7 @@ cask "nju-connect" do
   url "https://github.com/soundadam/nju-connect/releases/download/v1.1.1/nju-connect-1.1.1-macos-universal.zip"
   name "nju-connect"
   desc "Menu-bar controller and native campus-connectivity CLI"
-  homepage "https://soundadam.github.io/nju-connect/"
+  homepage "https://soundadam.com/projects/nju-connect/"
 
   depends_on formula: "librespeed-cli-nju-connect"
   depends_on macos: :ventura
