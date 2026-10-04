@@ -5,8 +5,8 @@ on:
   pull_request:
     paths:
       - "Formula/njulogin.rb"
-      - "Formula/teaway.rb"
-      - "Casks/soundprobe.rb"
+      - "Formula/tea.rb"
+      - "Casks/pace.rb"
       - "tap_migrations.json"
       - ".github/workflows/formula-ci.yml"
   push:
@@ -14,8 +14,8 @@ on:
       - main
     paths:
       - "Formula/njulogin.rb"
-      - "Formula/teaway.rb"
-      - "Casks/soundprobe.rb"
+      - "Formula/tea.rb"
+      - "Casks/pace.rb"
       - "tap_migrations.json"
       - ".github/workflows/formula-ci.yml"
 
@@ -121,8 +121,8 @@ jobs:
           test "$unknown_status" -eq 2
           grep -q '^Usage:' "$RUNNER_TEMP/njulogin.stderr"
 
-  soundprobe:
-    name: soundprobe cask (${{ matrix.os }})
+  pace:
+    name: pace cask (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
@@ -139,7 +139,7 @@ jobs:
       - name: Check out tap
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
-      - name: Audit, install, and smoke-test soundprobe cask
+      - name: Audit, install, and smoke-test pace cask
         shell: bash
         run: |
           set -euo pipefail
@@ -148,9 +148,9 @@ jobs:
           uname -m
           brew update
 
-          test_tap=soundadam/soundprobe-ci
+          test_tap=soundadam/pace-ci
           cleanup() {
-            brew uninstall --cask --force soundprobe >/dev/null 2>&1 || true
+            brew uninstall --cask --force pace >/dev/null 2>&1 || true
             brew untap "$test_tap" >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
@@ -158,34 +158,34 @@ jobs:
           brew tap-new --no-git "$test_tap"
           tap_repo="$(brew --repo "$test_tap")"
           mkdir -p "$tap_repo/Casks"
-          cask_path="$tap_repo/Casks/soundprobe.rb"
-          cp Casks/soundprobe.rb "$cask_path"
+          cask_path="$tap_repo/Casks/pace.rb"
+          cp Casks/pace.rb "$cask_path"
           chmod 0644 "$cask_path"
 
           brew style "$cask_path"
-          brew audit --cask "$test_tap/soundprobe"
+          brew audit --cask "$test_tap/pace"
           HOMEBREW_NO_INSTALL_FROM_API=1 \
-            brew install --cask "$test_tap/soundprobe"
+            brew install --cask "$test_tap/pace"
 
-          cask_version="$({ brew info --json=v2 --cask "$test_tap/soundprobe"; } | \
+          cask_version="$({ brew info --json=v2 --cask "$test_tap/pace"; } | \
             python3 -c 'import json,sys; print(json.load(sys.stdin)["casks"][0]["version"])')"
-          got="$(soundprobe version)"
-          printf 'soundprobe version: %s\n' "$got"
-          test "$got" = "soundprobe $cask_version"
+          got="$(pace version)"
+          printf 'pace version: %s\n' "$got"
+          test "$got" = "pace $cask_version"
 
-          acceptance_home="$RUNNER_TEMP/soundprobe-home"
+          acceptance_home="$RUNNER_TEMP/pace-home"
           mkdir -p "$acceptance_home"
           set +e
-          diagnostics="$(HOME="$acceptance_home" soundprobe doctor --json)"
+          diagnostics="$(HOME="$acceptance_home" pace doctor --json)"
           doctor_status=$?
           set -e
-          printf 'soundprobe doctor exit: %s\n' "$doctor_status"
+          printf 'pace doctor exit: %s\n' "$doctor_status"
           printf '%s\n' "$diagnostics"
           printf '%s\n' "$diagnostics" | python3 -c 'import json,sys; value=json.load(sys.stdin); assert "ready" in value and "providers" in value, value; assert value.get("version") == sys.argv[1], value' "$cask_version"
-          test "$(HOME="$acceptance_home" soundprobe history --json)" = "[]"
+          test "$(HOME="$acceptance_home" pace history --json)" = "[]"
 
-  teaway:
-    name: teaway (${{ matrix.os }})
+  tea:
+    name: tea (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
@@ -202,7 +202,7 @@ jobs:
       - name: Check out tap
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
-      - name: Audit, install, and test teaway
+      - name: Audit, install, and test tea
         shell: bash
         run: |
           set -euo pipefail
@@ -211,34 +211,34 @@ jobs:
           uname -m
           brew update
 
-          test_tap=soundadam/teaway-ci
+          test_tap=soundadam/tea-ci
           cleanup() {
-            brew uninstall --force teaway >/dev/null 2>&1 || true
+            brew uninstall --force tea >/dev/null 2>&1 || true
             brew untap "$test_tap" >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
 
           brew tap-new --no-git "$test_tap"
-          formula_path="$(brew --repo "$test_tap")/Formula/teaway.rb"
-          cp Formula/teaway.rb "$formula_path"
+          formula_path="$(brew --repo "$test_tap")/Formula/tea.rb"
+          cp Formula/tea.rb "$formula_path"
 
           brew style "$formula_path"
-          brew audit --strict --new --formula "$test_tap/teaway"
+          brew audit --strict --new --formula "$test_tap/tea"
           HOMEBREW_NO_INSTALL_FROM_API=1 \
-            brew install --build-from-source "$test_tap/teaway"
-          brew test "$test_tap/teaway"
+            brew install --build-from-source "$test_tap/tea"
+          brew test "$test_tap/tea"
 
-          formula_version="$({ brew info --json=v2 "$test_tap/teaway"; } | \
+          formula_version="$({ brew info --json=v2 "$test_tap/tea"; } | \
             python3 -c 'import json,sys; print(json.load(sys.stdin)["formulae"][0]["versions"]["stable"])')"
-          test "$(teaway version)" = "teaway $formula_version"
+          test "$(tea version)" = "tea $formula_version"
 
-          help_output="$(teaway help)"
+          help_output="$(tea help)"
           grep -q '^Usage:' <<<"$help_output"
-          auth_status="$(teaway auth status)"
+          auth_status="$(tea auth status)"
           grep -q '^authorization: unregistered$' <<<"$auth_status"
 
           set +e
-          helper_error="$(teaway __teaway_privileged version 2>&1)"
+          helper_error="$(tea __tea_privileged version 2>&1)"
           helper_status=$?
           set -e
           test "$helper_status" -eq 77

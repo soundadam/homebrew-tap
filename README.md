@@ -16,8 +16,8 @@ Its Formula uses a checksum-pinned GitHub Release asset and requires
 
 ```bash
 brew install soundadam/tap/codex-switch
-brew install --cask soundadam/tap/soundprobe
-brew install soundadam/tap/teaway
+brew install --cask soundadam/tap/pace
+brew install soundadam/tap/tea
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
 brew install --cask soundadam/tap/nju-connect   # macOS
@@ -42,14 +42,15 @@ the explicitly requested Formula or Cask, not every current and future entry.
 - `codex-pulse`, `mac-thermal-lab`, and `nju-connect` are ad-hoc signed and not notarized.
 - Homebrew preserves quarantine for `codex-pulse`, `mac-thermal-lab`, and
   `nju-connect`; those casks do not change Gatekeeper.
-- `soundprobe` is an unsigned CLI cask. Its post-install hook clears the
+- `pace` is an unsigned CLI cask. Its post-install hook clears the
   quarantine xattr on the staged binary so Gatekeeper does not block it.
-  Measurement helpers are not bundled; run `soundprobe doctor` after install.
+  Measurement helpers are not bundled; run `pace doctor` after install.
 - `nju-connect` is an AGPL-3.0 preview built from its public tagged source.
   Recipients may remove quarantine locally with `xattr` after reviewing the
   Release and SHA-256. Its speed test uses the `librespeed-cli-nju-connect` Formula.
   The Linux-only `nju-connect` Formula builds the CLI from the same public tag.
-- `teaway` is built from its public immutable source tag. `on`, `off`, helper
+- `tea` is built from its public immutable source tag. homebrew-core's `tea` is the
+  unrelated Gitea CLI, so install it as `soundadam/tap/tea`. `on`, `off`, helper
   registration, and shutdown mutation should be run only from an attended terminal.
 - `njulogin` stores one plaintext credential file protected by directory mode
   `0700` and file mode `0600`; its private source asset requires repository-read
@@ -58,8 +59,8 @@ the explicitly requested Formula or Cask, not every current and future entry.
 ## Distribution releases
 
 - [Codex Switch 0.1.0](https://github.com/soundadam/homebrew-dist/releases/tag/codex-switch-v0.1.0)
-- [soundprobe 0.4.0](https://github.com/soundadam/soundprobe/releases/tag/v0.4.0)
-- [teaway 0.3.0](https://github.com/soundadam/teaway/releases/tag/v0.3.0)
+- [pace 0.5.0](https://github.com/soundadam/pace/releases/tag/v0.5.0)
+- [tea 0.5.0](https://github.com/soundadam/tea/releases/tag/v0.5.0)
 - [Codex Pulse 1.0.1](https://github.com/soundadam/homebrew-dist/releases/tag/codex-pulse-v1.0.1)
 - [Mac Thermal Lab 0.2.0 unsigned preview](https://github.com/soundadam/homebrew-dist/releases/tag/mac-thermal-lab-v0.2.0)
 - [nju-connect 1.1.0-alpha.2 unsigned preview](https://github.com/soundadam/nju-connect/releases/tag/v1.1.0-alpha.2)
