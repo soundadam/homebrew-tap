@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
-# release workflow 的 homebrew job 把 0.1.1 与两处 SHA-256 填好，写到 soundadam/homebrew-tap 的 Casks/tonescope.rb
+# release workflow 的 homebrew job 把 0.1.2 与两处 SHA-256 填好，写到 soundadam/homebrew-tap 的 Casks/tonescope.rb
 cask "tonescope" do
-  version "0.1.1"
+  version "0.1.2"
 
   on_macos do
-    sha256 "ea7b99ab30fdfcc8583ef3fc7906b4c0024f31fab64095d7dbaaee0cd605d2c9"
+    sha256 "49246564c03c432b0382ecba0628b25aa6442e11bd071525f88af82b41fe2b77"
 
     url "https://github.com/soundadam/tonescope/releases/download/v#{version}/tonescope-#{version}-macos-universal.zip"
 
     app "Tonescope.app"
+    binary "#{appdir}/Tonescope.app/Contents/MacOS/tonescope"
 
     caveats <<~EOS
       Tonescope.app is ad-hoc signed and not notarized. Homebrew preserves
@@ -24,7 +25,7 @@ cask "tonescope" do
   end
   on_linux do
     on_intel do
-      sha256 "100a9623a5c98c11d6b87b64664dfbf801b9c5d54533d7e8f7921743e6258415"
+      sha256 "92691626672b51d604e4825dcf0fd9d0aa3f71b9ea65098504c84147f5830a08"
 
       url "https://github.com/soundadam/tonescope/releases/download/v#{version}/tonescope-#{version}-linux-x86_64.tar.gz"
 
