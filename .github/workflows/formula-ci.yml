@@ -7,6 +7,7 @@ on:
       - "Formula/njulogin.rb"
       - "Formula/tea.rb"
       - "Casks/pace.rb"
+      - "Casks/tonescope.rb"
       - "tap_migrations.json"
       - ".github/workflows/formula-ci.yml"
   push:
@@ -16,6 +17,7 @@ on:
       - "Formula/njulogin.rb"
       - "Formula/tea.rb"
       - "Casks/pace.rb"
+      - "Casks/tonescope.rb"
       - "tap_migrations.json"
       - ".github/workflows/formula-ci.yml"
 
@@ -243,3 +245,76 @@ jobs:
           set -e
           test "$helper_status" -eq 77
           grep -q 'privileged helper must run as root' <<<"$helper_error"
+
+  tonescope:
+    name: tonescope cask (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-15
+          - macos-26
+          - ubuntu-24.04
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Set up Homebrew
+        if: runner.os == 'Linux'
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Audit, install, and check tonescope cask
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f Casks/tonescope.rb ]]; then
+            echo "Casks/tonescope.rb is not present yet; the tonescope release workflow writes it."
+            exit 0
+          fi
+
+          uname -sm
+          brew update
+
+          test_tap=soundadam/tonescope-ci
+          cleanup() {
+            brew uninstall --cask --force tonescope >/dev/null 2>&1 || true
+            brew untap "$test_tap" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          brew tap-new --no-git "$test_tap"
+          tap_repo="$(brew --repo "$test_tap")"
+          mkdir -p "$tap_repo/Casks"
+          cask_path="$tap_repo/Casks/tonescope.rb"
+          cp Casks/tonescope.rb "$cask_path"
+          chmod 0644 "$cask_path"
+
+          brew style "$cask_path"
+          brew audit --cask "$test_tap/tonescope"
+          HOMEBREW_NO_INSTALL_FROM_API=1 \
+            brew install --cask "$test_tap/tonescope"
+
+          cask_version="$({ brew info --json=v2 --cask "$test_tap/tonescope"; } | \
+            python3 -c 'import json,sys; print(json.load(sys.stdin)["casks"][0]["version"])')"
+
+          # GUI 程序，CI 里不启动；只查装上的是不是这个版本、这个架构
+          if [[ "$RUNNER_OS" == macOS ]]; then
+            test -d /Applications/Tonescope.app
+            plist_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' /Applications/Tonescope.app/Contents/Info.plist)"
+            test "$plist_version" = "$cask_version"
+            archs="$(lipo -archs /Applications/Tonescope.app/Contents/MacOS/tonescope)"
+            printf 'archs: %s\n' "$archs"
+            [[ "$archs" == *arm64* && "$archs" == *x86_64* ]]
+            codesign --verify --strict /Applications/Tonescope.app
+          else
+            bin="$(command -v tonescope)"
+            file -L "$bin"
+            file -L "$bin" | grep -q 'ELF 64-bit.*x86-64'
+          fi

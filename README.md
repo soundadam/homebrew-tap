@@ -20,6 +20,7 @@ brew install --cask soundadam/tap/pace
 brew install soundadam/tap/tea
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
+brew install --cask soundadam/tap/tonescope      # macOS and Linux x86_64
 brew install --cask soundadam/tap/nju-connect   # macOS
 brew install soundadam/tap/nju-connect          # Linux
 ```
@@ -39,9 +40,10 @@ the explicitly requested Formula or Cask, not every current and future entry.
 
 ## Security boundaries
 
-- `codex-pulse`, `mac-thermal-lab`, and `nju-connect` are ad-hoc signed and not notarized.
-- Homebrew preserves quarantine for `codex-pulse`, `mac-thermal-lab`, and
-  `nju-connect`; those casks do not change Gatekeeper.
+- `codex-pulse`, `mac-thermal-lab`, `nju-connect`, and `tonescope` are ad-hoc
+  signed and not notarized.
+- Homebrew preserves quarantine for `codex-pulse`, `mac-thermal-lab`,
+  `nju-connect`, and `tonescope`; those casks do not change Gatekeeper.
 - `pace` is an unsigned CLI cask. Its post-install hook clears the
   quarantine xattr on the staged binary so Gatekeeper does not block it.
   Measurement helpers are not bundled; run `pace doctor` after install.
@@ -62,5 +64,7 @@ the explicitly requested Formula or Cask, not every current and future entry.
 - [pace 0.5.0](https://github.com/soundadam/pace/releases/tag/v0.5.0)
 - [tea 0.5.0](https://github.com/soundadam/tea/releases/tag/v0.5.0)
 - [Codex Pulse 1.0.1](https://github.com/soundadam/homebrew-dist/releases/tag/codex-pulse-v1.0.1)
+- [Tonescope releases](https://github.com/soundadam/tonescope/releases); `Casks/tonescope.rb` is
+  written by its release workflow on each version tag
 - [Mac Thermal Lab 0.2.0 unsigned preview](https://github.com/soundadam/homebrew-dist/releases/tag/mac-thermal-lab-v0.2.0)
 - [nju-connect 1.1.0-alpha.2 unsigned preview](https://github.com/soundadam/nju-connect/releases/tag/v1.1.0-alpha.2)
