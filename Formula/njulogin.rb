@@ -1,53 +1,10 @@
 # frozen_string_literal: true
 
-class PrivateGitHubReleaseAssetDownloadStrategy < AbstractFileDownloadStrategy
-  include Utils::Curl
-
-  def fetch(timeout: nil)
-    token = ENV.fetch("HOMEBREW_GITHUB_API_TOKEN")
-    lock = DownloadLock.new(temporary_path)
-    begin
-      lock.lock
-      unless cached_location.exist?
-        temporary_path.dirname.mkpath
-        curl_download(
-          "--header", "Accept: application/octet-stream",
-          "--header", "Authorization: Bearer #{token}",
-          "--header", "X-GitHub-Api-Version: 2022-11-28",
-          url,
-          to:          temporary_path,
-          try_partial: false,
-          timeout:,
-          secrets:     [token]
-        )
-        cached_location.dirname.mkpath
-        temporary_path.rename(cached_location.to_s)
-      end
-      create_symlink_to_cached_download(cached_location)
-    ensure
-      lock.unlock(unlink: true)
-    end
-  end
-
-  def clear_cache
-    super
-    rm temporary_path if temporary_path.exist?
-  end
-
-  private
-
-  def resolved_url_and_basename
-    [url, "#{name}-#{version}.tar.gz"]
-  end
-end
-
 class Njulogin < Formula
   desc "Authenticate local or remote network paths with the NJU portal"
-  homepage "https://github.com/soundadam/homebrew-tap"
-  url "https://api.github.com/repos/soundadam/njulogin/releases/assets/491697985",
-      using: PrivateGitHubReleaseAssetDownloadStrategy
-  version "0.1.1"
-  sha256 "0430ea23bf628b844a8288033de02c51edeb4a7c2326e3ae8bc51eafe87efb20"
+  homepage "https://github.com/soundadam/njulogin"
+  url "https://github.com/soundadam/njulogin/archive/refs/tags/v0.1.1.tar.gz"
+  sha256 "127aea0d9fcd7cd0c63da26e896c35c83134beb4f23f21561ea92601e5817547"
   license "MIT"
 
   depends_on "go" => :build
