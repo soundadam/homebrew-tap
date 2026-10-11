@@ -5,8 +5,10 @@ on:
   pull_request:
     paths:
       - "Formula/njulogin.rb"
-      - "Formula/tea.rb"
+      - "Casks/nju-connect.rb"
+      - "Casks/njulogin.rb"
       - "Casks/pace.rb"
+      - "Casks/tea.rb"
       - "Casks/tonescope.rb"
       - "tap_migrations.json"
       - ".github/workflows/formula-ci.yml"
@@ -15,8 +17,10 @@ on:
       - main
     paths:
       - "Formula/njulogin.rb"
-      - "Formula/tea.rb"
+      - "Casks/nju-connect.rb"
+      - "Casks/njulogin.rb"
       - "Casks/pace.rb"
+      - "Casks/tea.rb"
       - "Casks/tonescope.rb"
       - "tap_migrations.json"
       - ".github/workflows/formula-ci.yml"
@@ -185,7 +189,7 @@ jobs:
           test "$(HOME="$acceptance_home" pace history --json)" = "[]"
 
   tea:
-    name: tea (${{ matrix.os }})
+    name: tea cask (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
@@ -202,7 +206,7 @@ jobs:
       - name: Check out tap
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
-      - name: Audit, install, and test tea
+      - name: Audit, install, and test tea cask
         shell: bash
         run: |
           set -euo pipefail
@@ -213,24 +217,34 @@ jobs:
 
           test_tap=soundadam/tea-ci
           cleanup() {
-            brew uninstall --force tea >/dev/null 2>&1 || true
+            brew uninstall --cask --force "$test_tap/tea" >/dev/null 2>&1 || true
             brew untap "$test_tap" >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
 
           brew tap-new --no-git "$test_tap"
-          formula_path="$(brew --repo "$test_tap")/Formula/tea.rb"
-          cp Formula/tea.rb "$formula_path"
+          tap_repo="$(brew --repo "$test_tap")"
+          mkdir -p "$tap_repo/Casks"
+          cask_path="$tap_repo/Casks/tea.rb"
+          cp Casks/tea.rb "$cask_path"
+          chmod 0644 "$cask_path"
 
-          brew style "$formula_path"
-          brew audit --strict --new --formula "$test_tap/tea"
+          brew style "$cask_path"
+          brew audit --cask "$test_tap/tea"
           HOMEBREW_NO_INSTALL_FROM_API=1 \
-            brew install --build-from-source "$test_tap/tea"
-          brew test "$test_tap/tea"
+            brew install --cask "$test_tap/tea"
 
-          formula_version="$({ brew info --json=v2 "$test_tap/tea"; } | \
-            python3 -c 'import json,sys; print(json.load(sys.stdin)["formulae"][0]["versions"]["stable"])')"
-          test "$(tea version)" = "tea $formula_version"
+          cask_version="$({ brew info --json=v2 --cask "$test_tap/tea"; } | \
+            python3 -c 'import json,sys; print(json.load(sys.stdin)["casks"][0]["version"])')"
+          test "$(tea version)" = "tea $cask_version"
+
+          # postflight clears quarantine on the ad-hoc signed executable
+          exe="$(realpath "$(command -v tea)")"
+          if xattr -p com.apple.quarantine "$exe" >/dev/null 2>&1; then
+            echo "::error::$exe is still quarantined"
+            exit 1
+          fi
+          codesign --verify --strict "$exe"
 
           help_output="$(tea help)"
           grep -q '^Usage:' <<<"$help_output"
@@ -315,4 +329,170 @@ jobs:
             bin="$(command -v tonescope)"
             file -L "$bin"
             file -L "$bin" | grep -q 'ELF 64-bit.*x86-64'
+          fi
+
+  nju-connect:
+    name: nju-connect cask (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-15
+          - macos-26
+          - ubuntu-24.04
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Set up Homebrew
+        if: runner.os == 'Linux'
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Audit, install, and test nju-connect cask
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          uname -sm
+          brew update
+
+          test_tap=soundadam/nju-connect-ci
+          cleanup() {
+            brew uninstall --cask --force "$test_tap/nju-connect" >/dev/null 2>&1 || true
+            brew untap "$test_tap" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          brew tap-new --no-git "$test_tap"
+          tap_repo="$(brew --repo "$test_tap")"
+          mkdir -p "$tap_repo/Casks"
+          cask_path="$tap_repo/Casks/nju-connect.rb"
+          cp Casks/nju-connect.rb "$cask_path"
+          chmod 0644 "$cask_path"
+
+          # The Cask depends on soundadam/tap/librespeed-cli-nju-connect; tap this
+          # checkout under that name so the dependency comes from the same commit.
+          # Its own dependencies (go) install from the API.
+          brew tap | grep -qx soundadam/tap || brew tap soundadam/tap "$GITHUB_WORKSPACE"
+          brew trust --formula soundadam/tap/librespeed-cli-nju-connect
+
+          brew style "$cask_path"
+          brew audit --cask "$test_tap/nju-connect"
+          brew install --cask "$test_tap/nju-connect"
+
+          cask_version="$({ brew info --json=v2 --cask "$test_tap/nju-connect"; } | \
+            python3 -c 'import json,sys; print(json.load(sys.stdin)["casks"][0]["version"])')"
+          test "$(nju-connect version)" = "nju-connect $cask_version"
+
+          set +e
+          nju-connect unknown-command >/dev/null 2>&1
+          unknown_status=$?
+          set -e
+          test "$unknown_status" -eq 2
+
+          # The menu bar app is not launched in CI; check what was installed.
+          if [[ "$RUNNER_OS" == macOS ]]; then
+            app=/Applications/nju-connect.app
+            plist_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist")"
+            test "$plist_version" = "$cask_version"
+            test "$(realpath "$(command -v nju-connect)")" = "$(realpath "$app/Contents/Helpers/nju-connect")"
+            archs="$(lipo -archs "$app/Contents/MacOS/nju-connect-menu")"
+            printf 'archs: %s\n' "$archs"
+            [[ "$archs" == *arm64* && "$archs" == *x86_64* ]]
+            codesign --verify --strict "$app"
+            # postflight clears quarantine on the ad-hoc signed app
+            if xattr -p com.apple.quarantine "$app" >/dev/null 2>&1; then
+              echo "::error::$app is still quarantined"
+              exit 1
+            fi
+          else
+            file -L "$(command -v nju-connect)" | grep -q 'ELF 64-bit.*x86-64'
+          fi
+
+  njulogin-cask:
+    name: njulogin cask (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-15
+          - macos-26
+          - ubuntu-24.04
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Set up Homebrew
+        if: runner.os == 'Linux'
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Audit, install, and test njulogin cask
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f Casks/njulogin.rb ]]; then
+            echo "Casks/njulogin.rb is not present yet; the njulogin release workflow writes it."
+            exit 0
+          fi
+
+          uname -sm
+          brew update
+
+          test_tap=soundadam/njulogin-cask-ci
+          cleanup() {
+            brew uninstall --cask --force "$test_tap/njulogin" >/dev/null 2>&1 || true
+            brew untap "$test_tap" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          brew tap-new --no-git "$test_tap"
+          tap_repo="$(brew --repo "$test_tap")"
+          mkdir -p "$tap_repo/Casks"
+          cask_path="$tap_repo/Casks/njulogin.rb"
+          cp Casks/njulogin.rb "$cask_path"
+          chmod 0644 "$cask_path"
+
+          brew style "$cask_path"
+          brew audit --cask "$test_tap/njulogin"
+          HOMEBREW_NO_INSTALL_FROM_API=1 \
+            brew install --cask "$test_tap/njulogin"
+
+          cask_version="$({ brew info --json=v2 --cask "$test_tap/njulogin"; } | \
+            python3 -c 'import json,sys; print(json.load(sys.stdin)["casks"][0]["version"])')"
+          test "$(njulogin version)" = "njulogin $cask_version"
+
+          help_output="$(njulogin help 2>&1)"
+          grep -q '^Usage:' <<<"$help_output"
+
+          set +e
+          njulogin </dev/null >"$RUNNER_TEMP/njulogin.stdout" 2>"$RUNNER_TEMP/njulogin.stderr"
+          nonterminal_status=$?
+          njulogin unknown-command >/dev/null 2>&1
+          unknown_status=$?
+          set -e
+          test "$nonterminal_status" -eq 2
+          test "$unknown_status" -eq 2
+          grep -q '^Usage:' "$RUNNER_TEMP/njulogin.stderr"
+
+          if [[ "$RUNNER_OS" == macOS ]]; then
+            # postflight clears quarantine on the ad-hoc signed executable
+            exe="$(realpath "$(command -v njulogin)")"
+            if xattr -p com.apple.quarantine "$exe" >/dev/null 2>&1; then
+              echo "::error::$exe is still quarantined"
+              exit 1
+            fi
+            codesign --verify --strict "$exe"
           fi
