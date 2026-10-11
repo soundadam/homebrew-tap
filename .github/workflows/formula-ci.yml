@@ -2,9 +2,16 @@ name: Formula CI
 
 on:
   workflow_dispatch:
-  # Every pull request runs, so the required `check` always reports. Releases
-  # push their Cask straight to main and only run when a definition changed.
   pull_request:
+    paths:
+      - "Formula/njulogin.rb"
+      - "Casks/nju-connect.rb"
+      - "Casks/njulogin.rb"
+      - "Casks/pace.rb"
+      - "Casks/tea.rb"
+      - "Casks/tonescope.rb"
+      - "tap_migrations.json"
+      - ".github/workflows/formula-ci.yml"
   push:
     branches:
       - main
@@ -490,19 +497,3 @@ jobs:
             fi
             codesign --verify --strict "$exe"
           fi
-
-  # The branch ruleset requires this job alone. It passes when every job above
-  # passed or was skipped, so adding a job here is the only change a new one needs.
-  check:
-    if: always()
-    needs: [njulogin, pace, tea, tonescope, nju-connect, njulogin-cask]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Every job passed or was skipped
-        env:
-          RESULTS: ${{ join(needs.*.result, ' ') }}
-        run: |
-          echo "$RESULTS"
-          for r in $RESULTS; do
-            case "$r" in success|skipped) ;; *) exit 1 ;; esac
-          done
