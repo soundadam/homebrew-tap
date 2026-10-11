@@ -378,9 +378,10 @@ jobs:
 
           # The Cask depends on soundadam/tap/librespeed-cli-nju-connect; tap this
           # checkout under that name so the dependency comes from the same commit.
-          # Its own dependencies (go) install from the API.
+          # Its own dependencies (go) install from the API. Trust the tap as the
+          # README tells users to.
           brew tap | grep -qx soundadam/tap || brew tap soundadam/tap "$GITHUB_WORKSPACE"
-          brew trust --formula soundadam/tap/librespeed-cli-nju-connect
+          brew trust --tap soundadam/tap
 
           brew style "$cask_path"
           brew audit --cask "$test_tap/nju-connect"

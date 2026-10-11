@@ -18,7 +18,10 @@ Each Formula or Cask pins an exact version and checksum.
 
 ## Install
 
+Trust the tap once, then install by fully qualified name:
+
 ```bash
+brew trust --tap soundadam/tap
 brew install --cask soundadam/tap/nju-connect   # macOS and Linux
 brew install --cask soundadam/tap/pace          # macOS and Linux
 brew install --cask soundadam/tap/tea           # macOS
@@ -29,14 +32,10 @@ brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
 ```
 
-Use fully qualified names with current Homebrew tap-trust rules. This trusts only
-the explicitly requested Formula or Cask, not every current and future entry.
-A dependency from this tap is not covered by that, so trust the one the
-`nju-connect` Cask needs before installing it:
-
-```bash
-brew trust --formula soundadam/tap/librespeed-cli-nju-connect
-```
+Homebrew loads a Formula or Cask from a third-party tap only when it is trusted.
+Without the tap-wide trust, installing one by name trusts that one entry and
+nothing it depends on, so the `nju-connect` Cask stops at
+`librespeed-cli-nju-connect`.
 
 `nju-connect` and `tea` were Formulae and are now Casks of the same name.
 `tap_migrations.json` makes `brew update` replace an installed Formula with the
