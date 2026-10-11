@@ -2,55 +2,64 @@
 
 Public Homebrew definitions maintained by `soundadam`.
 
-Public source repositories are consumed directly from immutable release tags when
-possible. Packages whose source or build pipeline is private use anonymously
-downloadable assets in [`soundadam/homebrew-dist`](https://github.com/soundadam/homebrew-dist).
-Each Formula or Cask pins an exact version and checksum. AGPL binary releases include
-the exact corresponding-source archive.
+- Applications with a public repository ship prebuilt archives on their own
+  immutable GitHub Releases. On each version tag their release workflow fills in
+  `packaging/homebrew/<name>.rb` and writes it here as `Casks/<name>.rb`, following
+  the [appkit](https://github.com/soundadam/appkit) conventions: `nju-connect`,
+  `pace`, `tea`, and `tonescope`.
+- `njulogin` and `librespeed-cli-nju-connect` are Formulae built from a public
+  immutable release archive.
+- Packages whose source or build pipeline is private use anonymously
+  downloadable assets in [`soundadam/homebrew-dist`](https://github.com/soundadam/homebrew-dist):
+  `codex-switch`, `codex-pulse`, and `mac-thermal-lab`. Their AGPL binary releases
+  include the exact corresponding-source archive.
+
+Each Formula or Cask pins an exact version and checksum.
 
 ## Install
 
 ```bash
-brew install soundadam/tap/codex-switch
-brew install --cask soundadam/tap/pace
-brew install soundadam/tap/tea
+brew install --cask soundadam/tap/nju-connect   # macOS and Linux
+brew install --cask soundadam/tap/pace          # macOS and Linux
+brew install --cask soundadam/tap/tea           # macOS
+brew install --cask soundadam/tap/tonescope     # macOS and Linux x86_64
 brew install soundadam/tap/njulogin
+brew install soundadam/tap/codex-switch
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
-brew install --cask soundadam/tap/tonescope      # macOS and Linux x86_64
-brew install --cask soundadam/tap/nju-connect   # macOS
-brew install soundadam/tap/nju-connect          # Linux
 ```
 
 Use fully qualified names with current Homebrew tap-trust rules. This trusts only
 the explicitly requested Formula or Cask, not every current and future entry.
+A dependency from this tap is not covered by that, so trust the one the
+`nju-connect` Cask needs before installing it:
+
+```bash
+brew trust --formula soundadam/tap/librespeed-cli-nju-connect
+```
+
+`nju-connect` and `tea` were Formulae and are now Casks of the same name.
+`tap_migrations.json` makes `brew update` replace an installed Formula with the
+Cask when the Cask is trusted, and print the commands to do it otherwise.
 
 ## Security boundaries
 
-- `codex-pulse`, `mac-thermal-lab`, `nju-connect`, and `tonescope` are ad-hoc
-  signed and not notarized.
-- Homebrew preserves quarantine for `codex-pulse`, `mac-thermal-lab`,
-  `nju-connect`, and `tonescope`; those casks do not change Gatekeeper.
-- `pace` is an unsigned CLI cask. Its post-install hook clears the
-  quarantine xattr on the staged binary so Gatekeeper does not block it.
-  Measurement helpers are not bundled; run `pace doctor` after install.
-- `nju-connect` is an AGPL-3.0 preview built from its public tagged source.
-  Recipients may remove quarantine locally with `xattr` after reviewing the
-  Release and SHA-256. Its speed test uses the `librespeed-cli-nju-connect` Formula.
-  The Linux-only `nju-connect` Formula builds the CLI from the same public tag.
-- `tea` is built from its public immutable source tag. homebrew-core's `tea` is the
-  unrelated Gitea CLI, so install it as `soundadam/tap/tea`. `on`, `off`, helper
-  registration, and shutdown mutation should be run only from an attended terminal.
+- The macOS builds of every Cask here are ad-hoc signed and not notarized. A Cask
+  whose `postflight_steps` runs `xattr -dr com.apple.quarantine` clears quarantine
+  on install; the others keep it, and their caveats say how to open them.
+- `pace` does not bundle its measurement helpers; run `pace doctor` after install.
+- `nju-connect` is AGPL-3.0-or-later; its corresponding source is the public
+  repository at the release tag. Its speed test uses the
+  `librespeed-cli-nju-connect` Formula.
+- homebrew-core's `tea` is the unrelated Gitea CLI, so install this one as
+  `soundadam/tap/tea`. Run `on`, `off`, helper registration, and shutdown mutation
+  only from an attended terminal.
 - `njulogin` stores one plaintext credential file protected by directory mode
   `0700` and file mode `0600`.
 
-## Distribution releases
+## CI
 
-- [Codex Switch 0.1.0](https://github.com/soundadam/homebrew-dist/releases/tag/codex-switch-v0.1.0)
-- [pace 0.5.0](https://github.com/soundadam/pace/releases/tag/v0.5.0)
-- [tea 0.5.0](https://github.com/soundadam/tea/releases/tag/v0.5.0)
-- [Codex Pulse 1.0.1](https://github.com/soundadam/homebrew-dist/releases/tag/codex-pulse-v1.0.1)
-- [Tonescope releases](https://github.com/soundadam/tonescope/releases); `Casks/tonescope.rb` is
-  written by its release workflow on each version tag
-- [Mac Thermal Lab 0.2.0 unsigned preview](https://github.com/soundadam/homebrew-dist/releases/tag/mac-thermal-lab-v0.2.0)
-- [nju-connect 1.1.0-alpha.2 unsigned preview](https://github.com/soundadam/nju-connect/releases/tag/v1.1.0-alpha.2)
+[`formula-ci.yml`](.github/workflows/formula-ci.yml) covers `nju-connect`,
+`njulogin`, `pace`, `tea`, and `tonescope`: it copies each definition into a
+throwaway tap, runs `brew style` and `brew audit`, installs it, and smoke-tests
+the installed command on the platforms it supports.
