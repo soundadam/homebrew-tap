@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-# release workflow 的 homebrew job 把 0.1.0 与两处 SHA-256 填好，写到 soundadam/homebrew-tap 的 Casks/kwscope.rb
+# release workflow 的 homebrew job 把 0.2.0 与两处 SHA-256 填好，写到 soundadam/homebrew-tap 的 Casks/kwscope.rb
 cask "kwscope" do
-  version "0.1.0"
+  version "0.2.0"
 
   on_macos do
     depends_on macos: :ventura
     depends_on arch: :arm64
 
-    sha256 "7fa93ffdab1ba67e49e57d46c863bbd7541c745725bdee13cd3e4c097a85c91f"
+    sha256 "a058d58974872ce12b2c5c0fc9b4bbfd465ccb58a88f7304aa4495fb073d812a"
 
     url "https://github.com/soundadam/kwscope/releases/download/v#{version}/kwscope-#{version}-macos-universal.zip"
 
@@ -24,7 +24,7 @@ cask "kwscope" do
   end
   on_linux do
     on_intel do
-      sha256 "ddc091ee8fc705fe8bc3106dead9efc6c8b155deb3f843e785c201e0b3f3969f"
+      sha256 "536c3eeb3d4bc4ec201c816eb0a29368e7d19df80412079501c21e52fb825696"
 
       url "https://github.com/soundadam/kwscope/releases/download/v#{version}/kwscope-#{version}-linux-x86_64.tar.gz"
 
