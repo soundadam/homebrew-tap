@@ -66,6 +66,8 @@ jobs:
           trap cleanup EXIT
 
           brew tap-new --no-git "$test_tap"
+          # Homebrew loads Casks only from trusted taps.
+          brew trust "$test_tap"
           tap_repo="$(brew --repo "$test_tap")"
           mkdir -p "$tap_repo/Casks"
           cask_path="$tap_repo/Casks/pace.rb"
@@ -129,6 +131,8 @@ jobs:
           trap cleanup EXIT
 
           brew tap-new --no-git "$test_tap"
+          # Homebrew loads Casks only from trusted taps.
+          brew trust "$test_tap"
           tap_repo="$(brew --repo "$test_tap")"
           mkdir -p "$tap_repo/Casks"
           cask_path="$tap_repo/Casks/tea.rb"
@@ -208,6 +212,8 @@ jobs:
           trap cleanup EXIT
 
           brew tap-new --no-git "$test_tap"
+          # Homebrew loads Casks only from trusted taps.
+          brew trust "$test_tap"
           tap_repo="$(brew --repo "$test_tap")"
           mkdir -p "$tap_repo/Casks"
           cask_path="$tap_repo/Casks/tonescope.rb"
@@ -276,6 +282,8 @@ jobs:
           trap cleanup EXIT
 
           brew tap-new --no-git "$test_tap"
+          # Homebrew loads Casks only from trusted taps.
+          brew trust "$test_tap"
           tap_repo="$(brew --repo "$test_tap")"
           mkdir -p "$tap_repo/Casks"
           cask_path="$tap_repo/Casks/nju-connect.rb"
@@ -366,6 +374,8 @@ jobs:
           trap cleanup EXIT
 
           brew tap-new --no-git "$test_tap"
+          # Homebrew loads Casks only from trusted taps.
+          brew trust "$test_tap"
           tap_repo="$(brew --repo "$test_tap")"
           mkdir -p "$tap_repo/Casks"
           cask_path="$tap_repo/Casks/njulogin.rb"
