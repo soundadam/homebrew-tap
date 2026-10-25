@@ -6,9 +6,9 @@ Public Homebrew definitions maintained by `soundadam`.
   immutable GitHub Releases. On each version tag their release workflow fills in
   `packaging/homebrew/<name>.rb` and writes it here as `Casks/<name>.rb`, following
   the [appkit](https://github.com/soundadam/appkit) conventions: `nju-connect`,
-  `pace`, `tea`, and `tonescope`.
-- `njulogin` and `librespeed-cli-nju-connect` are Formulae built from a public
-  immutable release archive.
+  `njulogin`, `pace`, `tea`, and `tonescope`.
+- `librespeed-cli-nju-connect` is a Formula built from a public immutable
+  release archive.
 - Packages whose source or build pipeline is private use anonymously
   downloadable assets in [`soundadam/homebrew-dist`](https://github.com/soundadam/homebrew-dist):
   `codex-switch`, `codex-pulse`, and `mac-thermal-lab`. Their AGPL binary releases
@@ -26,7 +26,7 @@ brew install --cask soundadam/tap/nju-connect   # macOS and Linux
 brew install --cask soundadam/tap/pace          # macOS and Linux
 brew install --cask soundadam/tap/tea           # macOS
 brew install --cask soundadam/tap/tonescope     # macOS and Linux x86_64
-brew install soundadam/tap/njulogin
+brew install --cask soundadam/tap/njulogin      # macOS and Linux
 brew install soundadam/tap/codex-switch
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
@@ -37,7 +37,7 @@ Without the tap-wide trust, installing one by name trusts that one entry and
 nothing it depends on, so the `nju-connect` Cask stops at
 `librespeed-cli-nju-connect`.
 
-`nju-connect` and `tea` were Formulae and are now Casks of the same name.
+`nju-connect`, `njulogin`, and `tea` were Formulae and are now Casks of the same name.
 `tap_migrations.json` makes `brew update` replace an installed Formula with the
 Cask when the Cask is trusted, and print the commands to do it otherwise.
 
