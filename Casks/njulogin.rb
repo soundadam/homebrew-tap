@@ -7,11 +7,11 @@ cask "njulogin" do
   arch arm: "aarch64", intel: "x86_64"
   os macos: "macos", linux: "linux"
 
-  version "0.2.0"
-  sha256 arm:          "378ddac7e5502180d4f4e2c3454b8bfc0fdc102c5e03afc2b4488c3ff195b8ae",
-         intel:        "c71e0dd040252963c25117b968ba909e86470441a14993af7fd9b5849253d173",
-         arm64_linux:  "454c34a6ae370aa1cc20618504051a834f854b213a9a4fa5d5dd4dc689ba9ad6",
-         x86_64_linux: "bc705c14f7fa8b2b98957cd289a5c396bb3ba204edc2caa94afb3fabad0b25d3"
+  version "0.2.1"
+  sha256 arm:          "7482fd8024df6b96aac410b08d58b7a2750c0b2a187fbcdcd51e81c980f9004a",
+         intel:        "cf1a405824fefb6c38b1eea30ad146caef8c824a8a65d3396103ff3b5299605e",
+         arm64_linux:  "9067d8ebcf1d1be00601b7f170ae3f28319acf535c1c78a506b1c98578254f9a",
+         x86_64_linux: "17fa5a3f10fc9720156c11d69f32d0ca0e00f967f2ecd3ae7af7596af1e56a5b"
 
   on_macos do
     # Ad-hoc signed and not notarized: drop the quarantine attribute so
