@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-# The release workflow's homebrew job fills in 0.2.0 and the SHA-256 of each
+# The release workflow's homebrew job fills in 0.3.0 and the SHA-256 of each
 # archive and writes the result to Casks/chatvault.rb in soundadam/homebrew-tap.
 cask "chatvault" do
-  version "0.2.0"
+  version "0.3.0"
 
   on_arm do
-    sha256 "38c67e83371f3f97d7e4db4e581e4d93c1a948c46cebe23d450212e200989158"
+    sha256 "13b07e62febbad94d922509cb3796f546d3fb710f911d2a3794048bd4fa48821"
 
     url "https://github.com/soundadam/chatvault/releases/download/v#{version}/chatvault-#{version}-macos-aarch64.tar.gz"
 
     binary "chatvault-#{version}-macos-aarch64/chatvault"
   end
   on_intel do
-    sha256 "5547b5b3e8f54c1cfeca3f1103f991dac1dc1072d954de0a4fb1ec39605c447b"
+    sha256 "97f22f31a209a224f766d63255d67a39fc3c8fea80c1649a271aa2fecea80633"
 
     url "https://github.com/soundadam/chatvault/releases/download/v#{version}/chatvault-#{version}-macos-x86_64.tar.gz"
 
