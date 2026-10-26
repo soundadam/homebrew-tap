@@ -5,8 +5,8 @@ Public Homebrew definitions maintained by `soundadam`.
 - Applications with a public repository ship prebuilt archives on their own
   immutable GitHub Releases. On each version tag their release workflow fills in
   `packaging/homebrew/<name>.rb` and writes it here as `Casks/<name>.rb`, following
-  the [appkit](https://github.com/soundadam/appkit) conventions: `nju-connect`,
-  `njulogin`, `pace`, `tea`, and `tonescope`.
+  the [appkit](https://github.com/soundadam/appkit) conventions: `chatvault`,
+  `nju-connect`, `njulogin`, `pace`, `tea`, and `tonescope`.
 - `librespeed-cli-nju-connect` is a Formula built from a public immutable
   release archive.
 - Packages whose source or build pipeline is private use anonymously
@@ -27,6 +27,7 @@ brew install --cask soundadam/tap/pace          # macOS and Linux
 brew install --cask soundadam/tap/tea           # macOS
 brew install --cask soundadam/tap/tonescope     # macOS and Linux x86_64
 brew install --cask soundadam/tap/njulogin      # macOS and Linux
+brew install --cask soundadam/tap/chatvault     # macOS
 brew install soundadam/tap/codex-switch
 brew install --cask soundadam/tap/codex-pulse
 brew install --cask soundadam/tap/mac-thermal-lab
@@ -46,6 +47,8 @@ Cask when the Cask is trusted, and print the commands to do it otherwise.
 - The macOS builds of every Cask here are ad-hoc signed and not notarized. A Cask
   whose `postflight_steps` runs `xattr -dr com.apple.quarantine` clears quarantine
   on install; the others keep it, and their caveats say how to open them.
+- `chatvault` keeps decrypted WeChat messages and the database keys under
+  `~/Documents/ChatVault`; uninstalling leaves that directory in place.
 - `pace` does not bundle its measurement helpers; run `pace doctor` after install.
 - `nju-connect` is AGPL-3.0-or-later; its corresponding source is the public
   repository at the release tag. Its speed test uses the
