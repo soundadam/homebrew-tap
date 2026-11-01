@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-# The release workflow's homebrew job fills in 0.1.0 and the SHA-256 of each
+# The release workflow's homebrew job fills in 0.2.0 and the SHA-256 of each
 # archive and writes the result to Casks/facet.rb in soundadam/homebrew-tap.
 cask "facet" do
-  version "0.1.0"
+  version "0.2.0"
 
   on_macos do
     on_arm do
-      sha256 "c8f496453c22170945bd56775b887ae53c623a04c013c488bb98736e0d586f9d"
+      sha256 "b972a992f26cf05ce539745213f5dff6d9823a69e286f30409b26a77c0443f63"
 
       url "https://github.com/soundadam/facet/releases/download/v#{version}/facet-#{version}-macos-aarch64.tar.gz"
 
       binary "facet-#{version}-macos-aarch64/facet"
     end
     on_intel do
-      sha256 "f1ae86f5582854075972d8f0fda45ef1c47497ad3fc733ec6c0af72719c04180"
+      sha256 "0c00fc68776379b9d35e0e61f497c35e667081f30e9100e68e06ccf33115f729"
 
       url "https://github.com/soundadam/facet/releases/download/v#{version}/facet-#{version}-macos-x86_64.tar.gz"
 
@@ -29,14 +29,14 @@ cask "facet" do
   end
   on_linux do
     on_arm do
-      sha256 "c488ca495d5d4f889f8f5f5569104bfdc6680fa5c9c0cfa5540eb3f3e8163912"
+      sha256 "5579159980166c64a3724d0ee05c0a9af3aae1e6ba8a42c44fa6d57ec4de0fa5"
 
       url "https://github.com/soundadam/facet/releases/download/v#{version}/facet-#{version}-linux-aarch64.tar.gz"
 
       binary "facet-#{version}-linux-aarch64/facet"
     end
     on_intel do
-      sha256 "4ea1ac8d0cbd05b24e90364f23fdb4bc04e0be703fca39aaea70be1cf0891782"
+      sha256 "2b3031952569caf9eb7c6015244a889a3b24467b70db0fb119664b5d900dbef8"
 
       url "https://github.com/soundadam/facet/releases/download/v#{version}/facet-#{version}-linux-x86_64.tar.gz"
 
