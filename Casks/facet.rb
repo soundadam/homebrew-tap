@@ -1,20 +1,22 @@
 # frozen_string_literal: true
 
-# The release workflow's homebrew job fills in 0.3.0 and the SHA-256 of each
+# The release workflow's homebrew job fills in 0.3.1 and the SHA-256 of each
 # archive and writes the result to Casks/facet.rb in soundadam/homebrew-tap.
 cask "facet" do
-  version "0.3.0"
+  arch arm: "aarch64", intel: "x86_64"
+
+  version "0.3.1"
 
   on_macos do
     on_arm do
-      sha256 "d2acaabb2fbb2157ec9b9cdec9ed125a8ab59da9b6e9b69c4940a8d6c4b3776e"
+      sha256 "1b7729bf4a8d67851d77abed073c0a03b902ae905cb6735e73d52df7dd66c07d"
 
       url "https://github.com/soundadam/facet/releases/download/v#{version}/facet-#{version}-macos-aarch64.tar.gz"
 
       binary "facet-#{version}-macos-aarch64/facet"
     end
     on_intel do
-      sha256 "60ef8421f42cb3ad61caef13f8ad14e4533395fe9c568c11eb045e5cdb869211"
+      sha256 "9e76a53ffe8f3f59d974fb01d60e95ef1f9e8741dfa3ddcde531de08e223e693"
 
       url "https://github.com/soundadam/facet/releases/download/v#{version}/facet-#{version}-macos-x86_64.tar.gz"
 
@@ -22,25 +24,50 @@ cask "facet" do
     end
 
     # Ad-hoc signed and not notarized: clear the quarantine bit so Gatekeeper
-    # treats it like a file that facet update put in place.
+    # treats it like a file that facet update put in place. Then download
+    # fingerprint-chromium unless one is already usable. Only download: the
+    # sandbox these steps run in cannot mount its dmg, so facet unpacks it
+    # the first time it needs a kernel. The sandbox also points HOME at a
+    # scratch directory; FACET_ACCOUNT_HOME has facet use the account's. A
+    # failure (GitHub unreachable, no build for Intel Macs) leaves facet
+    # installed and the caveats say how to finish.
     postflight_steps do
       run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}"]
+      run "{{staged_path}}/facet-#{version}-macos-#{arch}/facet",
+          args:           ["kernel", "install", "--if-missing", "--download-only"],
+          must_succeed:   false,
+          print_stdout:   true,
+          network_access: true,
+          env:            { "FACET_ACCOUNT_HOME" => "1" },
+          writable_paths: ["Library/Application Support/facet"],
+          writable_base:  :home
     end
   end
   on_linux do
     on_arm do
-      sha256 "7bafc753a7d34c19b764507a9d787e0c8eacaa5ea52846200cf5e07d174c00ef"
+      sha256 "3b6b6c6211889f9fc072f1dd1c250bd0cfbceded75330b90e4b10aa1ede18eb8"
 
       url "https://github.com/soundadam/facet/releases/download/v#{version}/facet-#{version}-linux-aarch64.tar.gz"
 
       binary "facet-#{version}-linux-aarch64/facet"
     end
     on_intel do
-      sha256 "bee2e4c5ebeab44fad029fcc18b90e35f398550c1bcb722dab755dae2b624406"
+      sha256 "daf23b53706b3f9f6e054eb4b53d40c1c04eafa95b540d64f0b95d289e74130e"
 
       url "https://github.com/soundadam/facet/releases/download/v#{version}/facet-#{version}-linux-x86_64.tar.gz"
 
       binary "facet-#{version}-linux-x86_64/facet"
+    end
+
+    postflight_steps do
+      run "{{staged_path}}/facet-#{version}-linux-#{arch}/facet",
+          args:           ["kernel", "install", "--if-missing", "--download-only"],
+          must_succeed:   false,
+          print_stdout:   true,
+          network_access: true,
+          env:            { "FACET_ACCOUNT_HOME" => "1" },
+          writable_paths: [".local/share/facet"],
+          writable_base:  :home
     end
   end
 
@@ -56,8 +83,14 @@ cask "facet" do
   caveats <<~EOS
     facet is MIT licensed.
 
-    facet launches fingerprint-chromium but does not bundle it. Install
-    version 142 or later as /Applications/Chromium.app (macOS) or put
-    fingerprint-chromium on PATH (Linux), or point FACET_CHROMIUM at it.
+    facet launches fingerprint-chromium but does not bundle it. Installing
+    facet downloads it from github.com/adryfish/fingerprint-chromium unless
+    one is already usable, and facet unpacks it the first time it needs a
+    kernel. If the download failed, run
+
+      facet kernel install
+
+    or install an archive fetched some other way with
+    `facet kernel install FILE`. `facet kernel` shows the kernel in use.
   EOS
 end
